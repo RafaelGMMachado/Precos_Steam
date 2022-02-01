@@ -1,0 +1,7 @@
+ID / Name / Price(R$) / Lowest Price(R$) / Achievements
+431960 / Wallpaper Engine / 9.99 / 8.39 / 17
+1145360 / Hades / 30.86 / 30.86 / 49
+1123770 / Curse of the Dead Gods / 34.95 / 31.92 / 30
+210970 / The Witness / 72.99 / 14.59 / 2
+1147560 / Skul: The Hero Slayer / 24.69 / 24.49 / 60
+1092790 / Inscryption / 39.99 / 39.99 / 30
