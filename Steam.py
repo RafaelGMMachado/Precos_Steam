@@ -12,12 +12,6 @@ from tkinter import scrolledtext
 from tkinter import messagebox
 from unidecode import unidecode
 
-# Função para atualizar ou atualizar automaticamente todos quando abrir? Ou os 2?
-# Menu
-# Corrigir as partes do código que podem dar erro
-# Opções = Ver os preços dos jogos (opções para ver? Alfabética, ordem de prioridade personalizada) 
-# / adicionar jogo / excluir jogo / alterar menor preço / sair
-
 def getInfos (): # Abre o arquivo com os jogos e retorna uma lista com cada elemento de cada linha do arquivo
     arquivo = open("jogos.txt", "r")
     conteudo = arquivo.readlines()
@@ -132,7 +126,6 @@ def chngPrice ():
 for n in range (len(conteudo)):
     arquivo.write("{0} / {1} / {2} / {3} / {4}".format (conteudo[n][0], conteudo[n][1], conteudo[n][2], conteudo[n][3], conteudo[n][4]) )
 arquivo.close()"""
-# Colocar para alterar o , por . caso digitar errado (Corrigir pra não dar erro quando não colocar float)
 
 # Janela
 window = Tk()
