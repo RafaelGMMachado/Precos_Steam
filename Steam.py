@@ -18,7 +18,9 @@ def getInfos (): # Abre o arquivo com os jogos e retorna uma lista com cada elem
     arquivo.close()
     nconteudo = []
     for linha in conteudo:
-        linha = linha.split(" / ")
+        linha = linha.split("/")
+        for n in range( len(linha)-1 ):
+            linha[n] = linha[n].replace(" ", "")
         nconteudo.append(linha)
     return nconteudo
 def printar (): # Abre o arquivo com os jogos e coloca todas as linhas dele no programa
@@ -30,6 +32,13 @@ def printar (): # Abre o arquivo com os jogos e coloca todas as linhas dele no p
     for linha in conteudo:
         games.insert(END, linha)
     games["state"] = DISABLED
+def write (nconteudo): # Escreve os elementos no arquivo da forma correta
+    arquivo = open("Jogos.txt", "w")
+    arquivo.write("   ID   / Price(R$) / Lowest Price(R$) / Achievements /     Name\n")
+    for n in range (1, len(nconteudo)):
+        arquivo.write("{0:<8}/   {1:<8}/       {2:<11}/      {3:<8}/{4}".format (nconteudo[n][0], nconteudo[n][1], nconteudo[n][2], nconteudo[n][3], nconteudo[n][4]) )
+    arquivo.close()
+    printar()
 def update (): # Abre o arquivo com os jogos e atualiza o preço de cada um
     nconteudo = getInfos()
     for n in range (1, len(nconteudo)):
@@ -42,20 +51,10 @@ def update (): # Abre o arquivo com os jogos e atualiza o preço de cada um
         for i in bs:
             if '"final":' in i:
                 price = float(i[8:-2] + "." + i[-2::])
-        if float(nconteudo[n][3]) > price:
-            nconteudo[n][3] = price
-        nconteudo[n][2] = price
-    arquivo = open("Jogos.txt", "w")
-    for n in range (len(nconteudo)):
-        arquivo.write("{0} / {1} / {2} / {3} / {4}".format (nconteudo[n][0], nconteudo[n][1], nconteudo[n][2], nconteudo[n][3], nconteudo[n][4]) )
-    arquivo.close()
-    printar()
-# Ver Preços 
-def viewPrices ():
-    arquivo = open("jogos.txt", "r")
-    conteudo = arquivo.read()
-    arquivo.close()
-    print(conteudo)
+        if float(nconteudo[n][2]) > price:
+            nconteudo[n][2] = price
+        nconteudo[n][1] = price
+    write(nconteudo)
 # Adicionar Jogo
 def addGame ():
     gameid = adicionarEntrada.get()
@@ -68,15 +67,12 @@ def addGame ():
     for i in bs:
         if '"name":' in i and count == 0:
             gamename = i[8:-1]
-            print(gamename)
             count += 1
         if '"final":' in i:
             price = float(i[8:-2] + "." + i[-2::])
             lowestprice = price
-            print("R$:", price)
         if '"achievements"' in i:
             achievements = i[24::]
-            print("Achievements:", i[24::])
     arquivo = open("jogos.txt", "r")
     conteudo = arquivo.readlines()
     arquivo.close()
@@ -86,47 +82,33 @@ def addGame ():
             exist = True
     if exist == False:
         arquivo = open("Jogos.txt", "a")
-        arquivo.write("\n{0} / {1} / {2} / {3} / {4}".format (gameid, gamename, price, lowestprice, achievements) )
+        arquivo.write("\n{0:<8}/   {1:<8.2f}/       {2:<11.2f}/      {3:<8}/ {4}".format (gameid, price, lowestprice, achievements, gamename) )
         arquivo.close()
-    print("Concluido")
-    printar()
+        printar()
 
 # Deletar jogo
 def delGame ():
-    gameid = excluirEntrada.get()
     validate = messagebox.askyesno("Pergunta", "Tem certeza que deseja excluir?")
     if validate == True:
+        gameid = excluirEntrada.get()
         conteudo = getInfos()
         for n in range (1, len(conteudo)):
-            if conteudo[n][0] == gameid:
+            if gameid in conteudo[n][0]:
                 del conteudo[n]
+                write(conteudo)
                 break
-        arquivo = open("Jogos.txt", "w")
-        for n in range (len(conteudo)):
-            arquivo.write("{0} / {1} / {2} / {3} / {4}".format (conteudo[n][0], conteudo[n][1], conteudo[n][2], conteudo[n][3], conteudo[n][4]) )
-        arquivo.close()
-        printar()
 # Mudar o menor preço
 def chngPrice ():
     gameid = atualizarPrecoEntrada.get()
     lowestprice = PrecoEntrada.get()
+    lowestprice = lowestprice.replace(",", ".")
     conteudo = getInfos()
     for n in range (1, len(conteudo)):
-        if conteudo[n][0] == gameid:
-            if float(conteudo[n][3]) > float(lowestprice):
-                conteudo[n][3] = lowestprice
-    arquivo = open("Jogos.txt", "w")
-    for n in range (len(conteudo)):
-        arquivo.write("{0} / {1} / {2} / {3} / {4}".format (conteudo[n][0], conteudo[n][1], conteudo[n][2], conteudo[n][3], conteudo[n][4]) )
-    arquivo.close()
-    printar()
+        if gameid in conteudo[n][0]:
+            if float(conteudo[n][2]) > float(lowestprice):
+                conteudo[n][2] = lowestprice
+                write(conteudo)
     
-# Transformar essa parte em função
-"""arquivo = open("Jogos.txt", "w")
-for n in range (len(conteudo)):
-    arquivo.write("{0} / {1} / {2} / {3} / {4}".format (conteudo[n][0], conteudo[n][1], conteudo[n][2], conteudo[n][3], conteudo[n][4]) )
-arquivo.close()"""
-
 # Janela
 window = Tk()
 window.title("Algoritimos")
